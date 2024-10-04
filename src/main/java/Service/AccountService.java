@@ -31,4 +31,19 @@ public class AccountService {
         Account newAccount = new Account(username, password);
         return accountDAO.insertAccount(newAccount); // Returns the new account (including account_id)
     }
+
+    public Account login(String username, String password) {
+        // Optional: Validate input
+        if (username == null || username.trim().isEmpty() ||
+            password == null || password.trim().isEmpty()) {
+            return null; // Invalid input
+        }
+    
+        // Use the DAO to get the account
+        Account account = accountDAO.getAccountByUsernameAndPassword(username, password);
+    
+        // Return the account if found
+        return account;
+    }
+    
 }

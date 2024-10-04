@@ -25,8 +25,9 @@ public class SocialMediaController {
      */
     public Javalin startAPI() {
         Javalin app = Javalin.create();
-        app.post("/register", this::postAccountHandler);  // Define the POST /register endpoint
-        return app;  // Return the configured Javalin app object
+        app.post("/register", this::postAccountHandler);  
+        app.post("/login", this::postLoginHandler);
+        return app;  
     }
 
     /**
@@ -56,6 +57,27 @@ public class SocialMediaController {
             
         }
     }
+    
+    private void postLoginHandler(Context ctx) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+    
+        // Parse the request body into an Account object (without account_id)
+        Account credentials = mapper.readValue(ctx.body(), Account.class);
+    
+        // Attempt to login using AccountService
+        Account loggedInAccount = accountService.login(credentials.getUsername(), credentials.getPassword());
+    
+        if (loggedInAccount != null) {
+            // Login successful
+            ctx.json(loggedInAccount);
+            ctx.status(200); // Optional since 200 is the default
+        } else {
+            // Login failed
+            ctx.status(401); // Unauthorized
+            ctx.result("");  // Ensure response body is empty
+        }
+    }
+    
     
     
 }

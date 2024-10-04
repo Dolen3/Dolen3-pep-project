@@ -54,5 +54,35 @@ public class AccountDAO {
         }
         return false;
     }
+
+    public Account getAccountByUsernameAndPassword(String username, String password){
+        Connection connection = ConnectionUtil.getConnection();
+    
+        try {
+            String sql = "SELECT * FROM account WHERE username = ? AND password = ?";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, username);
+            preparedStatement.setString(2, password);
+    
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                int accountId = resultSet.getInt("account_id");
+                String retrievedUsername = resultSet.getString("username");
+                String retrievedPassword = resultSet.getString("password");
+            
+                // Create and return the Account object
+                return new Account(accountId, retrievedUsername, retrievedPassword);
+            } else {
+                // No matching account found
+                return null;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } 
+        return null;
+    }
+    
+
+
     
 }
