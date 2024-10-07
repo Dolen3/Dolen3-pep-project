@@ -1,7 +1,9 @@
 package Controller;
 
 import Model.Account;
+import Model.Message;
 import Service.AccountService;
+import Service.MessageService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.javalin.Javalin;
@@ -13,10 +15,12 @@ import io.javalin.http.Context;
 public class SocialMediaController {
 
     private AccountService accountService;
+    private MessageService messageService;
 
     // Constructor to initialize the AccountService
     public SocialMediaController() {
         this.accountService = new AccountService();
+        this.messageService = new MessageService();
     }
 
     /**
@@ -27,6 +31,7 @@ public class SocialMediaController {
         Javalin app = Javalin.create();
         app.post("/register", this::postAccountHandler);  
         app.post("/login", this::postLoginHandler);
+        app.post("/messages", this::postMessageHandler);
         return app;  
     }
 
@@ -78,6 +83,26 @@ public class SocialMediaController {
         }
     }
     
+    private void postMessageHandler(Context ctx) {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            Message message = mapper.readValue(ctx.body(), Message.class);
+            Message createdMessage = messageService.createMessage(message);
     
+            if (createdMessage != null) {
+                ctx.json(createdMessage);
+                ctx.status(200);
+            } else {
+                ctx.status(400);
+                ctx.result(""); // Ensure response body is empty
+            }
+        } catch (JsonProcessingException e) {
+            ctx.status(400);
+            ctx.result(""); // Ensure response body is empty
+        } catch (Exception e) {
+            ctx.status(500);
+            ctx.result(""); // Ensure response body is empty
+        }
+    }
     
 }

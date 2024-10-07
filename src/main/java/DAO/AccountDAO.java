@@ -4,8 +4,6 @@ import Model.Account;
 import Util.ConnectionUtil;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
 
 public class AccountDAO {
 
@@ -81,8 +79,27 @@ public class AccountDAO {
         } 
         return null;
     }
+
+    public Account getAccountById(int accountId) {
+        Connection connection = ConnectionUtil.getConnection();
+        try {
+            String sql = "SELECT * FROM account WHERE account_id = ?";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setInt(1, accountId);
     
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                String username = resultSet.getString("username");
+                String password = resultSet.getString("password");
+                return new Account(accountId, username, password);
+            } else {
+                return null; // Account not found
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
 
-
+    }
     
 }
