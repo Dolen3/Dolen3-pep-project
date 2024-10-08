@@ -8,6 +8,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class defines the endpoints and handlers for the Social Media API, including user registration.
@@ -32,6 +34,10 @@ public class SocialMediaController {
         app.post("/register", this::postAccountHandler);  
         app.post("/login", this::postLoginHandler);
         app.post("/messages", this::postMessageHandler);
+        app.get("/messages", this::getAllMessagesHandler); 
+        app.get("/messages/{message_id}", this::getMessageByIdHandler); 
+
+
         return app;  
     }
 
@@ -102,6 +108,28 @@ public class SocialMediaController {
         } catch (Exception e) {
             ctx.status(500);
             ctx.result(""); // Ensure response body is empty
+        }
+    }
+    
+
+    private void getAllMessagesHandler(Context ctx) {
+        List<Message> messages = messageService.getAllMessages();
+        ctx.json(messages);
+        ctx.status(200); 
+    }
+    
+    private void getMessageByIdHandler(Context ctx) {
+        int messageId = Integer.parseInt(ctx.pathParam("message_id"));
+        Message message = messageService.getMessageById(messageId);
+    
+        if (message != null) {
+            // Message found, return it as JSON
+            ctx.json(message);
+            ctx.status(200); // Optional, 200 is default
+        } else {
+            // Message not found, return 200 with empty body
+            ctx.result("");
+            ctx.status(200);
         }
     }
     

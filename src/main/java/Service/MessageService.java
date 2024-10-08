@@ -4,6 +4,9 @@ import DAO.MessageDAO;
 import DAO.AccountDAO;
 import Model.Message;
 import Model.Account;
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class MessageService {
 
@@ -29,5 +32,13 @@ public class MessageService {
     
         // Use the DAO to insert the message into the database
         return messageDAO.insertMessage(message); // Returns the new message (including message_id)
+    }
+
+    public List<Message> getAllMessages() {
+        return messageDAO.getAllMessages();
+    }
+    
+    public Message getMessageById(int message_id) {
+        return messageDAO.getMessageById(message_id);
     }
 }
