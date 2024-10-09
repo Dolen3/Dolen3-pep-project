@@ -14,14 +14,12 @@ public class AccountDAO {
             String sql = "INSERT INTO account (username, password) VALUES (?, ?)";
             PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
-            // Set the parameters for the prepared statement
+            
             preparedStatement.setString(1, account.getUsername());
             preparedStatement.setString(2, account.getPassword());
 
-            // Execute the insert statement
             preparedStatement.executeUpdate();
 
-            // Get the generated primary key (account_id)
             ResultSet pkeyResultSet = preparedStatement.getGeneratedKeys();
             if (pkeyResultSet.next()) {
                 int generatedAccountId = pkeyResultSet.getInt(1);
@@ -45,7 +43,7 @@ public class AccountDAO {
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 int count = resultSet.getInt(1);
-                return count > 0; // Return true if the username exists
+                return count > 0; 
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -71,7 +69,7 @@ public class AccountDAO {
                 // Create and return the Account object
                 return new Account(accountId, retrievedUsername, retrievedPassword);
             } else {
-                // No matching account found
+                
                 return null;
             }
         } catch (SQLException e) {
@@ -93,7 +91,7 @@ public class AccountDAO {
                 String password = resultSet.getString("password");
                 return new Account(accountId, username, password);
             } else {
-                return null; // Account not found
+                return null; 
             }
         } catch (SQLException e) {
             e.printStackTrace();
